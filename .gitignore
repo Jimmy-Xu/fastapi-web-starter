@@ -2,7 +2,8 @@
 .DS_Store
 /data
 /tmp
-
+sqlitestudio*
+SQLiteStudio*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

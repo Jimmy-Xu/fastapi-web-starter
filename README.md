@@ -32,10 +32,15 @@ $ unzip fastapi-web-starter.zip
 
 # change the directory
 $ cd fastapi-web-starter
+
+# Next we have to create a virtual environement to install the dependencies
+python -m venv venv
+
 # install packages
-$ pip install -r requirements.txt
+pip install -i https://mirrors.aliyun.com/pypi/simple/ -r requirements.txt
+
 # start the server
-$ uvicorn app.main:app --reload --port 8080
+uvicorn app.main:app --reload --host 127.0.0.1 --port 8080
 ```
 
 Visit [http://127.0.0.1:8080/](http://127.0.0.1:8080/).
