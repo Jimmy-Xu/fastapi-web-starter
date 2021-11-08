@@ -1,9 +1,11 @@
+import logging
 from fastapi_login import LoginManager
 
 from app.config import Config
 
-manager = LoginManager(Config.secret, Config.token_url)
-manager.cookie_name = 'oversight_token'
+manager = LoginManager(Config.secret, Config.token_url, use_cookie=True)
+manager.cookie_name = "token"
+
 
 def hash_password(plaintext: str):
     """
@@ -15,6 +17,7 @@ def hash_password(plaintext: str):
     Returns:
         The hashed password, including salt and algorithm information
     """
+    logging.info("hash_password")
     return manager.pwd_context.hash(plaintext)
 
 
@@ -29,5 +32,6 @@ def verify_password(plaintext: str, hashed: str):
     Returns:
         True if the passwords match
     """
+    logging.info("verify_password")
 
     return manager.pwd_context.verify(plaintext, hashed)

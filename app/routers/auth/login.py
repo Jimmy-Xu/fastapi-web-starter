@@ -47,13 +47,7 @@ async def login(request: Request, db: Session = Depends(get_session)):
                 form.__dict__.update(errors=[])
                 response = templates.TemplateResponse(
                     "login.html", form.__dict__)
-                response.set_cookie(
-                    key=manager.cookie_name,
-                    value=f"Bearer {access_token}",
-                    httponly=True,
-                    max_age=2147483647,
-                    expires=2147483647,
-                )
+                manager.set_cookie(response, access_token)
                 logging.info("user {0} login successful".format(form.username))
             return response
         except HTTPException as e:

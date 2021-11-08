@@ -9,14 +9,14 @@ from app.exceptions import InvalidUserName
 from app.models.posts import PostCreate, PostResponse
 from app.security import manager
 
-router = APIRouter(prefix='/posts')
+router = APIRouter(prefix='/post')
 
 
 @router.post('/create', response_model=PostResponse)
 def create(post: PostCreate, user=Depends(manager), db=Depends(get_session)) -> PostResponse:
     post = create_post(post.text, user, db)
     result = PostResponse.from_orm(post)
-    logging.debug("post created: {0}".format(result))
+    logging.debug("post created: {0}".format(result, result.cre))
     return result
 
 

@@ -1,3 +1,4 @@
+import logging
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_login.exceptions import InvalidCredentialsException
@@ -7,17 +8,19 @@ from app.db import get_session
 from app.db.actions import get_user_by_name
 from app.models.auth import Token
 from app.security import verify_password, manager
+from starlette.responses import RedirectResponse, Response
 
 router = APIRouter(
     prefix="/auth"
 )
 
 
-@router.post('/login', response_model=Token)
+@router.post('/login')
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_session)) -> Token:
     """
     Logs in the user provided by form_data.username and form_data.password
     """
+    logging.info("user {0} auth".format(form_data.username))
     user = get_user_by_name(form_data.username, db)
     if user is None:
         raise InvalidCredentialsException
@@ -26,4 +29,12 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
         raise InvalidCredentialsException
 
     token = manager.create_access_token(data={'sub': user.username})
-    return Token(access_token=token, token_type='bearer')
+
+    resp = RedirectResponse(url="/private", status_code=302)
+    manager.set_cookie(resp, token)
+    return resp
+
+
+@router.get("/private")
+def getPrivateendpoint(_=Depends(manager)):
+    return "You are an authentciated user"

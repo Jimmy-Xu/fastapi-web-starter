@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% set active_page = "posts" %}
+
+{% block title %}Posts{% endblock %}
+
+{% block head %}
+{{ super() }}
+
+
+{% endblock %}
+
+{% block page_content %}
+<h1 class="cap">Posts</h1>
+
+<h3>New Post</h3>
+<form action="/posts" method="post">
+    <input type="text" name="text" value="{{result}}" required />
+    <input type="submit">
+</form>
+
+
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+
+{% endblock %}

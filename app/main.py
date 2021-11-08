@@ -9,7 +9,7 @@ from app.routers.auth import login
 from app.routers.auth.auth import router as auth_router
 from app.routers.auth.user import router as user_router
 from app.routers.auth.posts import router as posts_router
-from app.routers import twoforms, unsplash, accordion
+from app.routers import twoforms, unsplash, accordion, posts
 
 import logging
 
@@ -34,9 +34,12 @@ app.include_router(auth_router)
 app.include_router(user_router)
 app.include_router(posts_router)
 
+
 app.include_router(unsplash.router)
 app.include_router(twoforms.router)
 app.include_router(accordion.router)
+app.include_router(posts.router)
+
 
 
 @app.get("/", response_class=HTMLResponse)
