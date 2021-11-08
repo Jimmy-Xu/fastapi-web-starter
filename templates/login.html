@@ -41,7 +41,7 @@
 
 <div id="login-form-wrap">
   <h2>Login</h2>
-  <form id="login-form" action="auth/login" method="post">
+  <form id="login-form" action="login" method="post">
     <p>
       <input type="text" id="username" name="username" placeholder="username" value="{{username}}" required><i
         class="validation"><span></span><span></span></i>
@@ -54,7 +54,7 @@
       <input type="submit" id="login" value="Login">
     </p>
     <p>
-    <div class="row" style="min-height:20px">
+    <div class="row" style="min-height:20px; text-align: left; font-size: 16px; padding-bottom: 10px;">
       <div class="text-danger font-weight-bold">
         {% for error in errors %}
         <li>{{error}}</li>

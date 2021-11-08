@@ -3,7 +3,7 @@ from fastapi_login import LoginManager
 from app.config import Config
 
 manager = LoginManager(Config.secret, Config.token_url)
-
+manager.cookie_name = 'oversight_token'
 
 def hash_password(plaintext: str):
     """
