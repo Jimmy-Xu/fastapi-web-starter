@@ -61,10 +61,12 @@ async def show_page(request: Request, page_name: str):
 # https://github.com/MushroomMaula/fastapi_login/issues/28
 @app.middleware("http")
 async def redirect_middleware(request: Request, call_next):
-    logging.info("redirect_middleware")
-    whitelist = ['/login', '/']
+    whitelist = ['/login', '/static']
     # non authenticated path
-    if request.url.path in whitelist:
+    logging.info(
+        "redirect_middleware: request.url.path={0}".format(request.url.path))
+    url_prefix = "/{0}".format(request.url.path.split("/")[1])
+    if url_prefix in whitelist:
         return await call_next(request)
     else:
         # Expired token redirects back to login page.
