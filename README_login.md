@@ -26,38 +26,10 @@ https://github.com/pawelsalawa/sqlitestudio/releases
 
 create users table if users not exist
 ```
-//open app.db with SQLiteStudio
-CREATE TABLE users (
-    id       INTEGER       PRIMARY KEY AUTOINCREMENT,
-    username VARCHAR (20),
-    password VARCHAR (128),
-    is_admin INTEGER,
-    UNIQUE (
-        username
-    )
-    ON CONFLICT REPLACE
-);
-
-CREATE TABLE posts (
-    id         INTEGER        PRIMARY KEY AUTOINCREMENT,
-    text       VARCHAR (1024),
-    owner_id   INTEGER,
-    created_at TIMESTAMP      DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP
-);
-CREATE TRIGGER ModifyPostUpdatedAt
-         AFTER UPDATE
-            ON posts
-      FOR EACH ROW
-          WHEN NEW.updated_at <= OLD.updated_at
-BEGIN
-    UPDATE test
-       SET updated_at = CURRENT_TIMESTAMP
-     WHERE id = OLD.id;
-END;
+create from app_db.sql
 ```
 
-add user to db
+add new user to db
 ```
 // create .env
 echo secret=test > .env
