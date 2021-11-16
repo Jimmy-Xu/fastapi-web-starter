@@ -4,7 +4,7 @@ from pydantic import BaseSettings
 
 root = pathlib.Path(__file__).parent.parent
 # This will always give the correct path as long as .env is in the parent directory
-env_file = os.path.join(root , '.env')
+env_file = os.path.join(root, '.env')
 
 
 class Settings(BaseSettings):
@@ -14,8 +14,17 @@ class Settings(BaseSettings):
     db_uri: str = "sqlite+pysqlite:///app.db"
     token_url: str = "/auth/login"
 
+    # binance
+    baseUrl: str
+    apiKey: str
+    apiSecretKey_test: str
+    baseUrl_test: str
+    apiSecretKey: str
+    apiKey_test: str
+
     class Config:
         env_file = '.env'
+
 
 print("env_file: {0}".format(env_file))
 

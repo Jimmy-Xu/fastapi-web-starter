@@ -16,8 +16,6 @@
 <h2>You selected {{tag}}</h2>
 {% endif %}
 
-{% set flora = ['flower','tree','fruit','garden'] %}
-{% set fauna = [ 'cat', 'dog', 'bird', 'fish'] %}
 
 <form method="post" id="category">
     <div class="accordion" id="accordionExample">
@@ -90,7 +88,28 @@
         </div>
     </div>
     <button type="submit" class="submit btn btn-primary btn-xl">Submit</button>
+
 </form>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>NO.</th>
+            <th>Field</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key in table %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ key }}
+            <td>{{ table[key] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
 
 {% endblock %}
 
