@@ -140,6 +140,10 @@ a[aria-expanded="true"] {
     background: #6d7fcc;
 }
 
+li.active {
+    background-color: lightgreen;
+}
+
 a[data-toggle="collapse"] {
     position: relative;
 }
