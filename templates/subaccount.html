@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% set active_page = "accordion" %}
+{% set active_page = "subAccount" %}
 
-{% block title %}Accordion{% endblock %}
+{% block title %}Sub-Account{% endblock %}
 
 {% block head %}
 {{ super() }}
@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block page_content %}
-<h1 class="cap">Accordion</h1>
+<h1 class="cap">Sub Account</h1>
 
 {% if tag %}
 <h2>You selected {{tag}}</h2>
@@ -18,7 +18,7 @@
 
 
 <form method="post" id="category">
-    <div class="accordion" id="accordionExample">
+    <div class="subAccount" id="subAccountExample">
         <div class="card">
             <div class="card-header" id="headingOne">
                 <h2 class="mb-0">
@@ -36,7 +36,7 @@
             show 
             {% endif %}
             {% endfor %}
-            " aria-labelledby="headingOne" data-parent="#accordionExample">
+            " aria-labelledby="headingOne" data-parent="#subAccountExample">
                 <div class="card-body">
                     {% for name in flora %}
                     {% if tag == name %}
@@ -69,7 +69,7 @@
             show 
             {% endif %}
             {% endfor %}
-            " aria-labelledby="headingTwo" data-parent="#accordionExample">
+            " aria-labelledby="headingTwo" data-parent="#subAccountExample">
                 <div class="card-body">
                     {% for name in fauna %}
                     {% if tag == name %}

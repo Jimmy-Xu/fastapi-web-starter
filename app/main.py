@@ -12,7 +12,7 @@ from app.routers.auth import login
 from app.routers.auth.auth import router as auth_router
 from app.routers.auth.user import router as user_router
 from app.routers.auth.posts import router as posts_router
-from app.routers import twoforms, unsplash, accordion, posts
+from app.routers import twoforms, unsplash, subaccount, posts
 from app.security import manager
 from app.config import Config
 import logging
@@ -42,7 +42,7 @@ app.include_router(posts_router)
 
 app.include_router(unsplash.router)
 app.include_router(twoforms.router)
-app.include_router(accordion.router)
+app.include_router(subaccount.router)
 app.include_router(posts.router)
 
 

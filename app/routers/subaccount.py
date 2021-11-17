@@ -12,8 +12,8 @@ router = APIRouter()
 templates = Jinja2Templates(directory="templates/")
 
 
-@router.get("/accordion", response_class=HTMLResponse)
-def get_accordion(request: Request):
+@router.get("/subaccount", response_class=HTMLResponse)
+def get_subaccount(request: Request):
     tag = "flower"
     result = "Type a number"
 
@@ -40,10 +40,10 @@ def get_accordion(request: Request):
     table = rlt['data']
 
     return templates.TemplateResponse(
-        'accordion.html',
+        'subaccount.html',
         context={'request': request, 'result': result, 'tag': tag, 'flora': flora, 'fauna': fauna, 'table': table})
 
 
-@router.post("/accordion", response_class=HTMLResponse)
-def post_accordion(request: Request, tag: str = Form(...)):
-    return templates.TemplateResponse('accordion.html', context={'request': request, 'tag': tag})
+@router.post("/subaccount", response_class=HTMLResponse)
+def post_subaccount(request: Request, tag: str = Form(...)):
+    return templates.TemplateResponse('subaccount.html', context={'request': request, 'tag': tag})
