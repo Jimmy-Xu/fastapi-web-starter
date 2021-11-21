@@ -12,12 +12,13 @@ router = APIRouter()
 templates = Jinja2Templates(directory="templates/")
 
 
-@router.get("/subaccount", response_class=HTMLResponse)
+@router.get("/binance/subaccount", response_class=HTMLResponse)
 def get_subaccount(request: Request):
     tag = "flower"
     result = "Type a number"
 
-    client = Client(Config.apiKey, Config.apiSecretKey)
+    #client = Client(api_key=Config.apiKey_test, api_secret=Config.apiSecretKey_test, testnet=True)
+    client = Client(api_key=Config.apiKey, api_secret=Config.apiSecretKey, testnet=False)
     '''
     {
         "data": {
@@ -32,8 +33,24 @@ def get_subaccount(request: Request):
         }
     }
     '''
-    rlt = client.get_account_api_trading_status()
-    logging.info(rlt)
+    try:
+        server_time = client.get_server_time()
+        logging.info("server_time result: {}".format(server_time))
+    except Exception as e:
+        logging.info("server_time error: {}".format(str(e)))
+    
+    try:
+        system_status = client.get_system_status()
+        logging.info("get_system_status result: {}".format( system_status))
+    except Exception as e:
+        logging.info("get_system_status error: {}".format(str(e)))
+    
+
+    try:
+        rlt = client.get_account_api_trading_status()
+        logging.info("trading_status result: {}".format(rlt))
+    except Exception as e:
+        logging.info("trading_status error: {}".format(str(e)))
 
     # sub_account_list = client.get_sub_account_list()
     sub_account_list = {
@@ -119,13 +136,13 @@ def get_subaccount(request: Request):
 
     flora = ['aaa', 'bbb', 'ccc', 'ddd']
     fauna = ['111', '222', '333', '444']
-    table = rlt['data']
+    table = {}
 
     return templates.TemplateResponse(
-        'subaccount.html',
+        'binance/subaccount.html',
         context={'request': request, 'result': result, 'tag': tag, 'flora': flora, 'fauna': fauna, 'table': table, 'sub_account_assets': sub_account_assets})
 
 
-@router.post("/subaccount", response_class=HTMLResponse)
+@router.post("/binance/subaccount", response_class=HTMLResponse)
 def post_subaccount(request: Request, tag: str = Form(...)):
     return templates.TemplateResponse('subaccount.html', context={'request': request, 'tag': tag})
