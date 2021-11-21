@@ -1,9 +1,11 @@
+import logging
 from typing import Callable, Iterator, Optional
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.db import get_session
-from app.db.models import Post, User
+from app.db.models import ApiKey, Post, User
+from app.models import api_keys
 from app.security import hash_password, manager
 
 
@@ -69,3 +71,17 @@ def create_post(text: str, owner: User, db: Session) -> Post:
     db.commit()
 
     return post
+
+
+def create_api_key(app_name: str, api_key: str, secret_key: str, owner: User, db: Session) -> Post:
+    logging.info("create_api_key: app_name={0} api_key={1} secret_key={2} owner={3}".format(
+        app_name, api_key, secret_key, owner))
+    apiKey = ApiKey(app_name=app_name, api_key=api_key,
+                    secret_key=secret_key, owner=owner)
+
+    # https://stackoverflow.com/questions/24291933/sqlalchemy-object-already-attached-to-session
+    local_object = db.merge(apiKey)
+    db.add(local_object)
+    db.commit()
+
+    return apiKey

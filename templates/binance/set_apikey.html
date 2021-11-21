@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% set active_page = "" %}
+
+{% block title %}Binance Set API Key{% endblock %}
+
+{% block head %}
+{{ super() }}
+
+
+{% endblock %}
+
+{% block page_content %}
+<h1 class="cap">Binance API Key</h1>
+<form action="/binance/set_apikey" method="post">
+    <div class="input-group">
+        <span class="input-group-addon" style="width: 95px;">API Key:</span>
+        <input type="text" name="api_key" value="" class="form-control input-sm" required style="z-index:1" />
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon" style="width: 95px;">Secret Key:</span>
+        <input type="text" name="secret_key" value="" class="form-control input-sm" required style="z-index:1" />
+    </div>
+    <input type="submit">
+</form>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>NO.</th>
+            <th>API Key</th>
+            <th>Secret Key</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in result %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ item.api_key }}</td>
+            <td>{{ item.secret_key }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+
+{% endblock %}
