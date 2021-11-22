@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% set active_page = "" %}
+
+{% block title %}Binance Set API Key{% endblock %}
+
+{% block head %}
+{{ super() }}
+
+
+{% endblock %}
+
+{% block page_content %}
+<h1 class="cap">Binance API Key</h1>
+<form action="/binance/apikey" method="post">
+    <div class="input-group">
+        <span class="input-group-addon" style="width: 95px;">API Key:</span>
+        <input type="text" name="api_key" value="{{ api_key }}" class="form-control input-sm" required
+            style="z-index:1" />
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon" style="width: 95px;">Secret Key:</span>
+        <input type="password" name="secret_key" value="{{secret_key}}" class="form-control input-sm" required
+            style="z-index:1" />
+    </div>
+    <input type="submit">
+
+    {% if error %}
+    <div class="container">
+        <div class="row">
+            <div class="span4">
+                <div class="alert" style="color:red">
+                    <a class="close" data-dismiss="alert"> x </a>
+                    <strong>Warning!</strong> {{ error }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</form>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>NO.</th>
+            <th>API Key</th>
+            <th>Secret Key</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in result %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ item.api_key }}</td>
+            <td>{{ item.secret_key }}</td>
+            <td>
+                <ul class="list-inline m-0">
+                    <li class="list-inline-item">
+                        <button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip"
+                            data-placement="top" title="" data-original-title="Edit" aria-describedby="tooltip102818"><i
+                                class="fa fa-edit"></i></button>
+                    </li>
+                    <li class="list-inline-item">
+                        <button onclick="confirmDeleteModal('{{ item.api_key }}')"
+                            class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip"
+                            data-placement="top" title="" data-original-title="Delete"><i
+                                class="fa fa-trash"></i></button>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    function confirmDeleteModal(apiKey) {
+        $('#deleteModal').modal();
+        $('#deleteButton').html('<a class="btn btn-danger" onclick="deleteData(\'' + apiKey + '\')">Delete</a>');
+        $("#confirmMessage").html('<p>Sure to delete API Key \'' + apiKey + '\'?</p>');
+    }
+    function deleteData(apiKey) {
+        $.ajax({
+            url: '/binance/apikey/' + apiKey,
+            type: 'DELETE',
+            success: function (data, status, jqXhr) {
+                console.log("delete api key ", apiKey, " OK")
+                $('#deleteModal').modal('hide'); // now close modal
+                //refresh page
+                location.href = location.href;
+            },
+            error: function (jqXhr, textStatus, errorMessage) {
+                console.log(jqXhr, textStatus, errorMessage);
+            }
+        });
+
+
+    }
+</script>
+
+<!----modal starts here--->
+<div id="deleteModal" class="modal fade" role='dialog'>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+            </div>
+            <div class="modal-body">
+                <span id='confirmMessage'></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <span id='deleteButton'></span>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!--Modal ends here--->
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+
+{% endblock %}

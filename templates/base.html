@@ -31,21 +31,9 @@
     
 
     {% endblock %}
-</head>
-
-<body>
-    <div class="wrapper">
-        {% include 'include/sidebar.html' %}
-        <!-- Page Content  -->
-        <div id="content">
-            {% include 'include/topnav.html' %}
-            {% block page_content %}
-            {% endblock %}
-        </div>
-    </div>
-    <div class="overlay"></div>
 
 
+    
     {% block scripts %}
 
     <script src="{{ url_for('static', path='/js/jquery-3.4.1.min.js') }}" crossorigin="anonymous"></script>
@@ -79,6 +67,21 @@
         });
     </script>
     {% endblock %}
+
+</head>
+
+<body>
+    <div class="wrapper">
+        {% include 'include/sidebar.html' %}
+        <!-- Page Content  -->
+        <div id="content">
+            {% include 'include/topnav.html' %}
+            {% block page_content %}
+            {% endblock %}
+        </div>
+    </div>
+    <div class="overlay"></div>
+
 </body>
 
 </html>

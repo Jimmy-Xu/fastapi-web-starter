@@ -1,5 +1,6 @@
 import logging
 from typing import Callable, Iterator, Optional
+from fastapi.openapi.models import APIKey
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -8,6 +9,7 @@ from app.db.models import ApiKey, Post, User
 from app.models import api_keys
 from app.security import hash_password, manager
 
+from typing import Tuple
 
 @manager.user_loader(session_provider=get_session)
 def get_user_by_name(
@@ -73,7 +75,7 @@ def create_post(text: str, owner: User, db: Session) -> Post:
     return post
 
 
-def create_api_key(app_name: str, api_key: str, secret_key: str, owner: User, db: Session) -> Post:
+def create_api_key(app_name: str, api_key: str, secret_key: str, owner: User, db: Session) -> Tuple[APIKey, str]:
     logging.info("create_api_key: app_name={0} api_key={1} secret_key={2} owner={3}".format(
         app_name, api_key, secret_key, owner))
     apiKey = ApiKey(app_name=app_name, api_key=api_key,
@@ -81,7 +83,20 @@ def create_api_key(app_name: str, api_key: str, secret_key: str, owner: User, db
 
     # https://stackoverflow.com/questions/24291933/sqlalchemy-object-already-attached-to-session
     local_object = db.merge(apiKey)
-    db.add(local_object)
-    db.commit()
+    try:
+        db.add(local_object)
+        db.commit()
+        db.flush()
+        return apiKey, None
+    except Exception as e:
+        return None, str(e)
 
-    return apiKey
+
+def delete_api_key(app_name: str, api_key: str, owner: User, db: Session) -> APIKey:
+    logging.info("delete_api_key: app_name={0} api_key={1} owner={2}".format(
+        app_name, api_key, owner))
+    found_apikey = db.query(ApiKey).filter_by(app_name=app_name, api_key=api_key).first()
+    if found_apikey:
+        db.delete(found_apikey)
+        db.commit()
+        db.flush()
