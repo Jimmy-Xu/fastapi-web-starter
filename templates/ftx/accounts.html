@@ -10,9 +10,61 @@
 {% endblock %}
 
 {% block page_content %}
-<h4 class="cap">FTX(Balances of all accounts)</h4>
+<h4 class="cap">(FTX)Blance of all accounts</h4>
 
-TODO
+
+<form method="post" id="category">
+    <div class="accounts" id="accountsExample">
+        {% for email, data in sub_account_assets.items() %}
+        <div class="card">
+            <div class="card-header" id="heading_{{ loop.index }}">
+                <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse"
+                        data-target="#collapse_{{ loop.index }}" aria-controls="collapse_{{ loop.index }}">
+                        {{ email }}
+                    </button>
+
+                </h2>
+            </div>
+
+            <div id="collapse_{{ loop.index }}" class="collapse" aria-labelledby="heading_{{ loop.index }}"
+                data-parent="#accountsExample">
+                <div class="card-body">
+
+                    {% if tag == name %}
+                    {% set checked="checked" %}
+                    {% endif %}
+                    <div class="form-check form-check-inline">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>NO.</th>
+                                    <th>Asset</th>
+                                    <th>Free</th>
+                                    <th>Locked</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in data['balances'] %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ item['asset'] }}
+                                    <td>{{ item['free'] }}</td>
+                                    <td>{{ item['locked'] }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</form>
+
 
 {% endblock %}
 

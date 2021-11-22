@@ -19,6 +19,7 @@ from app.config import Config
 from app.routers.binance import subaccount as binance_subaccount
 from app.routers.binance import set_apikey as binance_set_apikey
 from app.routers.ftx import accounts as ftx_accounts
+from app.routers.ftx import set_apikey as ftx_set_apikey
 
 import logging
 
@@ -53,6 +54,7 @@ app.include_router(binance_subaccount.router)
 app.include_router(binance_set_apikey.router)
 # ftx api
 app.include_router(ftx_accounts.router)
+app.include_router(ftx_set_apikey.router)
 
 
 @app.get("/", response_class=HTMLResponse)

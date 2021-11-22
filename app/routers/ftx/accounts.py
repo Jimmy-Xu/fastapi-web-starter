@@ -12,7 +12,7 @@ templates = Jinja2Templates(directory="templates/")
 
 
 @router.get("/ftx/accounts", response_class=HTMLResponse)
-def get_subaccount(request: Request):
+def get_accounts(request: Request):
     return templates.TemplateResponse(
         'ftx/accounts.html',
         context={'request': request})

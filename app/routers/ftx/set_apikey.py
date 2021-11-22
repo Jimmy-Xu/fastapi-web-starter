@@ -17,25 +17,25 @@ router = APIRouter()
 templates = Jinja2Templates(directory="templates/")
 
 
-@router.get("/binance/set_apikey", response_class=HTMLResponse)
+@router.get("/ftx/set_apikey", response_class=HTMLResponse)
 def form_get(request: Request, user=Depends(manager)):
     logging.info(
-        "receive GET /binance/set_apikey, current user:{0}".format(user.username))
+        "receive GET /ftx/set_apikey, current user:{0}".format(user.username))
 
     apiKeyList = [ApiKeyResponse.from_orm(
-        p) for p in user.api_keys if p.app_name == "binance"]
+        p) for p in user.api_keys if p.app_name == "ftx"]
     print("list api_keys: {0}".format(len(apiKeyList)))
-    return templates.TemplateResponse('binance/set_apikey.html', context={'request': request, 'result': apiKeyList})
+    return templates.TemplateResponse('ftx/set_apikey.html', context={'request': request, 'result': apiKeyList})
 
 
-@router.post("/binance/set_apikey", response_class=HTMLResponse)
+@router.post("/ftx/set_apikey", response_class=HTMLResponse)
 def create(request: Request, user=Depends(manager), db=Depends(get_session), api_key: str = Form(...), secret_key: str = Form(...)):
     logging.info(
-        "receive POST /binance/set_apikey: api_key={0}, secret_key={1}".format(api_key, secret_key))
+        "receive POST /ftx/set_apikey: api_key={0}, secret_key={1}".format(api_key, secret_key))
 
     # add new post
     apiKey = create_api_key(
-        app_name="binance", api_key=api_key, secret_key=secret_key, owner=user, db=db)
+        app_name="ftx", api_key=api_key, secret_key=secret_key, owner=user, db=db)
     logging.info("new apiKey '{0}' added".format(apiKey.api_key))
 
     # add user to sesson again
@@ -43,6 +43,6 @@ def create(request: Request, user=Depends(manager), db=Depends(get_session), api
 
     # get new apiKeys
     apiKeyList = [ApiKeyResponse.from_orm(
-        p) for p in user.api_keys if p.app_name == "binance"]
+        p) for p in user.api_keys if p.app_name == "ftx"]
     print("apiKeys after created: {0}".format(len(apiKeyList)))
-    return templates.TemplateResponse('binance/set_apikey.html', context={'request': request, 'result': apiKeyList})
+    return templates.TemplateResponse('ftx/set_apikey.html', context={'request': request, 'result': apiKeyList})

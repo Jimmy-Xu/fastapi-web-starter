@@ -18,7 +18,8 @@ def get_subaccount(request: Request):
     result = "Type a number"
 
     #client = Client(api_key=Config.apiKey_test, api_secret=Config.apiSecretKey_test, testnet=True)
-    client = Client(api_key=Config.apiKey, api_secret=Config.apiSecretKey, testnet=False)
+    client = Client(api_key=Config.apiKey,
+                    api_secret=Config.apiSecretKey, testnet=False)
     '''
     {
         "data": {
@@ -38,13 +39,12 @@ def get_subaccount(request: Request):
         logging.info("server_time result: {}".format(server_time))
     except Exception as e:
         logging.info("server_time error: {}".format(str(e)))
-    
+
     try:
         system_status = client.get_system_status()
-        logging.info("get_system_status result: {}".format( system_status))
+        logging.info("get_system_status result: {}".format(system_status))
     except Exception as e:
         logging.info("get_system_status error: {}".format(str(e)))
-    
 
     try:
         rlt = client.get_account_api_trading_status()
