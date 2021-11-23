@@ -22,6 +22,8 @@ class Settings(BaseSettings):
     apiSecretKey: str
     apiKey_test: str
 
+    ctrKey: str
+
     class Config:
         env_file = '.env'
 

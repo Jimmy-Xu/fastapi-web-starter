@@ -18,7 +18,7 @@ wget https://download.visualstudio.microsoft.com/download/pr/5a50b8ac-2c22-47f1-
 Before we can run the webapp we need to create a suitable secret key and a admin user:
 ```
 // install requirements
-pip install -i https://mirrors.aliyun.com/pypi/simple/ wheel python-dotenv sqlalchemy sphinx pysqlite3 pydantic fastapi_login bcrypt uvicorn python-multipart aiofiles glog
+pip install -i https://mirrors.aliyun.com/pypi/simple/ wheel python-dotenv sqlalchemy sphinx pysqlite3 pydantic fastapi_login bcrypt uvicorn python-multipart aiofiles glog pycryptodomex
 
 // download & install sqlitestudio
 https://github.com/pawelsalawa/sqlitestudio/releases
