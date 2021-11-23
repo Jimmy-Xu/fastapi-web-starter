@@ -10,7 +10,7 @@ from app.security import manager
 from app.db import get_session
 from app.db.actions import create_api_key, delete_api_key
 
-from app.library.helpers import mask_api_key, aes_encrypt
+from app.library.helpers import mask_api_keys, aes_encrypt, mask_text
 
 
 router = APIRouter()
@@ -22,7 +22,7 @@ def form_get(request: Request, user=Depends(manager)):
     logging.info(
         "receive GET /ftx/apikey, current user:{0}".format(user.username))
 
-    apiKeyList = mask_api_key(user.api_keys, Config.ctrKey, 'ftx')
+    apiKeyList = mask_api_keys(user.api_keys, Config.ctrKey, 'ftx')
 
     print("list api_keys: {0}".format(len(apiKeyList)))
     return templates.TemplateResponse('ftx/apikey.html', context={'request': request, 'result': apiKeyList})
@@ -31,10 +31,10 @@ def form_get(request: Request, user=Depends(manager)):
 @router.post("/ftx/apikey", response_class=HTMLResponse)
 def create(request: Request, user=Depends(manager), db=Depends(get_session), api_key: str = Form(...), secret_key: str = Form(...)):
     logging.info(
-        "receive POST /ftx/apikey: api_key={0}, secret_key={1}".format(api_key, secret_key))
+        "receive POST /ftx/apikey: api_key={0}, secret_key(plain)={1}".format(api_key, mask_text(secret_key)))
 
     # save current api key list
-    apiKeyList = mask_api_key(user.api_keys, Config.ctrKey, 'ftx')
+    apiKeyList = mask_api_keys(user.api_keys, Config.ctrKey, 'ftx')
 
     # add new api key
     apiKey, err = create_api_key(
@@ -51,7 +51,7 @@ def create(request: Request, user=Depends(manager), db=Depends(get_session), api
         # add user to sesson again
         user = db.merge(user)
         # get new apiKeys
-        apiKeyList = mask_api_key(user.api_keys, Config.ctrKey, 'ftx')
+        apiKeyList = mask_api_keys(user.api_keys, Config.ctrKey, 'ftx')
 
     return templates.TemplateResponse('ftx/apikey.html', context={'request': request, 'result': apiKeyList, 'api_key': api_key, 'secret_key': secret_key,  'error': err})
 

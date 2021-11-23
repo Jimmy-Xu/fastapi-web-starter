@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.db import get_session
 from app.db.models import ApiKey, Post, User
+from app.library.helpers import mask_text
 from app.models import api_keys
 from app.security import hash_password, manager
 
@@ -76,8 +77,8 @@ def create_post(text: str, owner: User, db: Session) -> Post:
 
 
 def create_api_key(app_name: str, api_key: str, secret_key: str, owner: User, db: Session) -> Tuple[APIKey, str]:
-    logging.info("create_api_key: app_name={0} api_key={1} secret_key={2} owner={3}".format(
-        app_name, api_key, secret_key, owner))
+    logging.info("create_api_key: app_name={0} api_key={1} secret_key(cipher)={2} owner={3}".format(
+        app_name, api_key, mask_text(secret_key), owner))
     apiKey = ApiKey(app_name=app_name, api_key=api_key,
                     secret_key=secret_key, owner=owner)
 

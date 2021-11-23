@@ -28,29 +28,53 @@ def aes_encrypt(plaintext, ctr_key):
     iv = Random.new().read(AES.block_size)
     decryptor = CTRCipher(binascii.a2b_hex(ctr_key))
 
-    # .encode(): str to byte
-    a = decryptor.encrypt(plaintext.encode(), iv)
-    ciphertext = int_from_bytes(a)
-    return str(ciphertext)
+    # str -> byte
+    buf = decryptor.encrypt(plaintext.encode(), iv)
+
+    # byte -> int -> str
+    #ciphertext = int_from_bytes(buf)
+    # return str(ciphertext)
+
+    # byte -> hexstr
+    ciphertext = bytes2hexstr(buf)
+    return ciphertext
 
 
 def aes_decrypt(ciphertext, ctr_key):
     decryptor = CTRCipher(binascii.a2b_hex(ctr_key))
-    return bytes.decode(decryptor.decrypt(int_to_bytes(int(ciphertext))))
+
+    # str -> int -> byte -> str
+    # return bytes.decode(decryptor.decrypt(int_to_bytes(int(ciphertext))))
+
+    # hexstr -> byte -> str
+    return bytes.decode(decryptor.decrypt(hexstr2bytes(ciphertext)))
 
 
-def mask_api_key(api_keys, ctr_key, app_name):
+def bytes2hexstr(bs):
+    return ''.join(['%02x' % b for b in bs])
+
+
+def hexstr2bytes(str):
+    return bytes.fromhex(str)
+
+
+def mask_api_keys(api_keys, ctr_key, app_name):
     apiKeyList = []
     for k in api_keys:
         if k.app_name == app_name:
             item = ApiKeyResponse.from_orm(k)
             secret_key = aes_decrypt(item.secret_key, ctr_key)
-            n = len(secret_key)
-            if n > 4:
-                secret_key = "{0}{1}{2}".format(
-                    secret_key[0:2], "*"*(n-4), secret_key[-2:])
-            else:
-                secret_key = "*" * n
-            item.secret_key = secret_key
+            #logging.debug("api_key={0} secret_key(decrypted)={1}".format(item.api_key, secret_key))
+            item.secret_key = mask_text(secret_key)
             apiKeyList.append(item)
     return apiKeyList
+
+
+def mask_text(text):
+    n = len(text)
+    if n > 4:
+        text = "{0}{1}{2}".format(
+            text[0:2], "*"*(n-4), text[-2:])
+    else:
+        text = "*" * n
+    return text
