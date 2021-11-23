@@ -22,8 +22,8 @@ def form_get(request: Request, user=Depends(manager)):
     logging.info(
         "receive GET /ftx/apikey, current user:{0}".format(user.username))
 
-    apiKeyList = [ApiKeyResponse.from_orm(
-        p) for p in user.api_keys if p.app_name == "ftx"]
+    apiKeyList = mask_api_key(user.api_keys)
+
     print("list api_keys: {0}".format(len(apiKeyList)))
     return templates.TemplateResponse('ftx/apikey.html', context={'request': request, 'result': apiKeyList})
 
@@ -34,8 +34,7 @@ def create(request: Request, user=Depends(manager), db=Depends(get_session), api
         "receive POST /ftx/apikey: api_key={0}, secret_key={1}".format(api_key, secret_key))
 
     # save current api key list
-    apiKeyList = [ApiKeyResponse.from_orm(
-        p) for p in user.api_keys if p.app_name == "ftx"]
+    apiKeyList = mask_api_key(user.api_keys)
 
     # add new api key
     apiKey, err = create_api_key(
@@ -52,10 +51,24 @@ def create(request: Request, user=Depends(manager), db=Depends(get_session), api
         # add user to sesson again
         user = db.merge(user)
         # get new apiKeys
-        apiKeyList = [ApiKeyResponse.from_orm(
-            p) for p in user.api_keys if p.app_name == "ftx"]
+        apiKeyList = mask_api_key(user.api_keys)
 
     return templates.TemplateResponse('ftx/apikey.html', context={'request': request, 'result': apiKeyList, 'api_key': api_key, 'secret_key': secret_key,  'error': err})
+
+
+def mask_api_key(api_keys):
+    apiKeyList = []
+    for k in api_keys:
+        if k.app_name == "ftx":
+            item = ApiKeyResponse.from_orm(k)
+            n = len(item.secret_key)
+            if n > 4:
+                item.secret_key = "{0}{1}{2}".format(
+                    item.secret_key[0:2], "*"*(n-4), item.secret_key[-2:])
+            else:
+                item.secret_key = "*" * n
+            apiKeyList.append(item)
+    return apiKeyList
 
 
 @router.delete("/ftx/apikey/{apikey}")
