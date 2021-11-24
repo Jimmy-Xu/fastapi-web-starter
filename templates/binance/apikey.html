@@ -44,6 +44,7 @@
             <th>NO.</th>
             <th>API Key</th>
             <th>Secret Key</th>
+            <th>Defualt</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -54,14 +55,23 @@
             <td>{{ item.api_key }}</td>
             <td>{{ item.secret_key }}</td>
             <td>
-                <ul class="list-inline m-0">
-                    <li class="list-inline-item">
-                        <button onclick="confirmDeleteModal('{{ item.api_key }}')"
-                            class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip"
-                            data-placement="top" title="" data-original-title="Delete"><i
-                                class="fa fa-trash"></i></button>
-                    </li>
-                </ul>
+                {% if item.is_default %}
+                {% set check="check-" %}
+                {% else %}
+                {% set check="" %}
+                {% endif %}
+                <li class="list-inline-item">
+                    <button onclick="setDefaultKey('{{ item.api_key }}')" class="btn btn-success btn-sm rounded-0"
+                        type="button" data-toggle="tooltip" data-placement="top" title="" data-original-title="Select"
+                        aria-describedby="tooltip102818"><i class="fa fa-{{ check }}square"></i></button>
+                </li>
+            </td>
+            <td>
+                <li class="list-inline-item">
+                    <button onclick="confirmDeleteModal('{{ item.api_key }}')" class="btn btn-danger btn-sm rounded-0"
+                        type="button" data-toggle="tooltip" data-placement="top" title=""
+                        data-original-title="Delete"><i class="fa fa-trash"></i></button>
+                </li>
             </td>
         </tr>
         {% endfor %}
@@ -88,8 +98,19 @@
                 console.log(jqXhr, textStatus, errorMessage);
             }
         });
-
-
+    }
+    function setDefaultKey(apiKey) {
+        $.ajax({
+            url: '/binance/apikey/set_default?apikey=' + apiKey,
+            type: 'POST',
+            success: function (data, status, jqXhr) {
+                console.log("set api key ", apiKey, "as default OK")
+                location.href = location.href;
+            },
+            error: function (jqXhr, textStatus, errorMessage) {
+                console.log(jqXhr, textStatus, errorMessage);
+            }
+        });
     }
 </script>
 

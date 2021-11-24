@@ -1,11 +1,13 @@
 import datetime
 from pydantic import BaseModel
+from sqlalchemy.sql.sqltypes import Boolean
 
 
 class ApiKeyCreate(BaseModel):
     app_name: str
     api_key: str
     secret_key: str
+    is_default: bool
 
 
 class ApiKeyResponse(ApiKeyCreate):

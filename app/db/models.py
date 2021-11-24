@@ -41,6 +41,7 @@ class ApiKey(Base):
     app_name = Column(Text)
     api_key = Column(Text)
     secret_key = Column(Text)
+    is_default = Column(Boolean, default=False)
     owner = relationship("User", back_populates="api_keys")
     owner_id = Column(Integer, ForeignKey('users.id'))
     created_at = Column(DateTime, server_default=func.now())

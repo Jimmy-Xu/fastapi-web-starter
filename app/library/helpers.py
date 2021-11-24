@@ -64,7 +64,8 @@ def mask_api_keys(api_keys, ctr_key, app_name):
         if k.app_name == app_name:
             item = ApiKeyResponse.from_orm(k)
             secret_key = aes_decrypt(item.secret_key, ctr_key)
-            #logging.debug("api_key={0} secret_key(decrypted)={1}".format(item.api_key, secret_key))
+            logging.debug("api_key={0} secret_key(decrypted)={1} is_default={2}".format(
+                item.api_key, secret_key, item.is_default))
             item.secret_key = mask_text(secret_key)
             apiKeyList.append(item)
     return apiKeyList

@@ -8,7 +8,7 @@ from fastapi.param_functions import Depends
 from app.config import Config
 from app.security import manager
 from app.db import get_session
-from app.db.actions import create_api_key, delete_api_key
+from app.db.actions import create_api_key, delete_api_key, set_default_api_key
 
 from app.library.helpers import mask_api_keys, aes_encrypt, mask_text
 
@@ -68,3 +68,17 @@ def create(apikey: str, user=Depends(manager), db=Depends(get_session)):
     except Exception as e:
         logging.error(
             "failed to delete ftx API Key {0}, error: {1}".format(apikey, str(e)))
+
+
+@router.post("/ftx/apikey/set_default")
+def set_default(apikey: str, user=Depends(manager), db=Depends(get_session)):
+    logging.info(
+        "receive POST /ftx/apikey/set_default: api_key={0}".format(apikey))
+    try:
+        # set default api key
+        set_default_api_key(app_name="ftx",
+                            api_key=apikey, owner=user, db=db)
+        logging.info("ftx API Key '{0}' was set as default".format(apikey))
+    except Exception as e:
+        logging.error(
+            "failed to set ftx API Key {0} as default, error: {1}".format(apikey, str(e)))
