@@ -12,15 +12,13 @@
 {% block page_content %}
 <h1 class="cap">Binance API Key</h1>
 <form action="/binance/apikey" method="post">
-    <div class="input-group">
+    <div class="input-group" style="margin: 5px 0px 5px 0px;">
         <span class="input-group-addon" style="width: 95px;">API Key:</span>
-        <input type="text" name="api_key" value="{{ api_key }}" class="form-control input-sm" required
-            style="z-index:1" />
+        <input type="text" name="api_key" value="" class="form-control input-sm" required style="z-index:1" />
     </div>
-    <div class="input-group">
+    <div class="input-group" style="margin: 5px 0px 5px 0px;">
         <span class="input-group-addon" style="width: 95px;">Secret Key:</span>
-        <input type="password" name="secret_key" value="{{secret_key}}" class="form-control input-sm" required
-            style="z-index:1" />
+        <input type="password" name="secret_key" value="" class="form-control input-sm" required style="z-index:1" />
     </div>
     <input type="submit">
 
@@ -41,19 +39,17 @@
 <table class="table table-hover">
     <thead>
         <tr>
-            <th>NO.</th>
+            <!-- <th>NO</th> -->
+            <th>Use</th>
             <th>API Key</th>
             <th>Secret Key</th>
-            <th>Defualt</th>
-            <th>Action</th>
+            <th>Del</th>
         </tr>
     </thead>
     <tbody>
         {% for item in result %}
         <tr>
-            <td>{{ loop.index }}</td>
-            <td>{{ item.api_key }}</td>
-            <td>{{ item.secret_key }}</td>
+            <!-- <td>{{ loop.index }}</td> -->
             <td>
                 {% if item.is_default %}
                 {% set check="check-" %}
@@ -66,6 +62,9 @@
                         aria-describedby="tooltip102818"><i class="fa fa-{{ check }}square"></i></button>
                 </li>
             </td>
+            <td style="word-break: break-all">{{ item.api_key }}</td>
+            <td>{{ item.secret_key }}</td>
+
             <td>
                 <li class="list-inline-item">
                     <button onclick="confirmDeleteModal('{{ item.api_key }}')" class="btn btn-danger btn-sm rounded-0"

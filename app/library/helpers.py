@@ -75,7 +75,7 @@ def mask_text(text):
     n = len(text)
     if n > 4:
         text = "{0}{1}{2}".format(
-            text[0:2], "*"*(n-4), text[-2:])
+            text[0:2], "*" * 6, text[-2:])
     else:
         text = "*" * n
     return text
