@@ -7,19 +7,33 @@ from binance import Client
 from app.config import Config
 import logging
 
+from fastapi.param_functions import Depends
+from app.config import Config
+from app.security import manager
+
+from app.library.helpers import get_default_api_keys
+
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates/")
 
 
 @router.get("/binance/subaccount", response_class=HTMLResponse)
-def get_subaccount(request: Request):
+def get_subaccount(request: Request, user=Depends(manager)):
     tag = "flower"
     result = "Type a number"
 
-    #client = Client(api_key=Config.apiKey_test, api_secret=Config.apiSecretKey_test, testnet=True)
-    client = Client(api_key=Config.apiKey,
-                    api_secret=Config.apiSecretKey, testnet=False)
+    apiKey, secretKey = get_default_api_keys(
+        user.api_keys,  Config.ctrKey, 'binance', user.username)
+    if apiKey is None or secretKey is None:
+        logging.error(
+            "failed to get default api key for user {0}".format(user.uesrname))
+        return
+
+    logging.debug(
+        "found default api key({0}/{1}) for user {2}".format(apiKey, secretKey, user.username))
+    client = Client(api_key=apiKey,
+                    api_secret=secretKey, testnet=False)
     '''
     {
         "data": {

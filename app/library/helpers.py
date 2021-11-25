@@ -71,11 +71,23 @@ def mask_api_keys(api_keys, ctr_key, app_name):
     return apiKeyList
 
 
+def get_default_api_keys(api_keys, ctr_key, app_name, username):
+    for k in api_keys:
+        if k.app_name == app_name:
+            item = ApiKeyResponse.from_orm(k)
+            if item.is_default:
+                secret_key = aes_decrypt(item.secret_key, ctr_key)
+                return item.api_key, secret_key
+    logging.warn("no default api key found for app {0}, user {1}".format(
+        app_name, username))
+    return None, None
+
+
 def mask_text(text):
     n = len(text)
     if n > 4:
         text = "{0}{1}{2}".format(
-            text[0:2], "*" * 6, text[-2:])
+            text[0:2], "*" * 3, text[-2:])
     else:
         text = "*" * n
     return text

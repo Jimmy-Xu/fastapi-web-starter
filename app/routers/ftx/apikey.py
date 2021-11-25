@@ -82,3 +82,12 @@ def set_default(apikey: str, user=Depends(manager), db=Depends(get_session)):
     except Exception as e:
         logging.error(
             "failed to set ftx API Key {0} as default, error: {1}".format(apikey, str(e)))
+
+
+@router.get("/ftx/apikey/test", response_class=HTMLResponse)
+def test(request: Request, user=Depends(manager)):
+    logging.info(
+        "receive GET /ftx/apikey/test, current user:{0}".format(user.username))
+
+    print("test api_key result: {0}".format("OK"))
+    return templates.TemplateResponse('ftx/test.html', context={'request': request})

@@ -14,14 +14,7 @@ class Settings(BaseSettings):
     db_uri: str = "sqlite+pysqlite:///app.db"
     token_url: str = "/auth/login"
 
-    # binance
-    baseUrl: str
-    apiKey: str
-    apiSecretKey_test: str
-    baseUrl_test: str
-    apiSecretKey: str
-    apiKey_test: str
-
+    # AES
     ctrKey: str
 
     class Config:

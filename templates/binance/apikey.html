@@ -20,7 +20,9 @@
         <span class="input-group-addon" style="width: 95px;">Secret Key:</span>
         <input type="password" name="secret_key" value="" class="form-control input-sm" required style="z-index:1" />
     </div>
+
     <input type="submit">
+
 
     {% if error %}
     <div class="container">
@@ -62,7 +64,11 @@
                         aria-describedby="tooltip102818"><i class="fa fa-{{ check }}square"></i></button>
                 </li>
             </td>
-            <td style="word-break: break-all">{{ item.api_key }}</td>
+            <td>
+                <div style=" white-space: nowrap; width: 150px; overflow: hidden;text-overflow: ellipsis; ">
+                    {{ item.api_key }}
+                </div>
+            </td>
             <td>{{ item.secret_key }}</td>
 
             <td>
@@ -111,6 +117,7 @@
             }
         });
     }
+
 </script>
 
 <!----modal starts here--->

@@ -12,6 +12,7 @@ from app.db.actions import create_api_key, delete_api_key, set_default_api_key
 
 from app.library.helpers import mask_api_keys, aes_encrypt, mask_text
 
+from binance import Client
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates/")
@@ -19,12 +20,16 @@ templates = Jinja2Templates(directory="templates/")
 
 @router.get("/binance/apikey", response_class=HTMLResponse)
 def form_get(request: Request, user=Depends(manager)):
+    test_api = "0"
+    if 'test_api' in request.query_params:
+        test_api = request.query_params["test_api"]
     logging.info(
-        "receive GET /binance/apikey, current user:{0}".format(user.username))
+        "receive GET /binance/apikey, test_api:{0}, current user:{1}".format(test_api, user.username))
 
     apiKeyList = mask_api_keys(user.api_keys, Config.ctrKey, 'binance')
 
     print("list api_keys: {0}".format(len(apiKeyList)))
+
     return templates.TemplateResponse('binance/apikey.html', context={'request': request, 'result': apiKeyList})
 
 
@@ -57,7 +62,7 @@ def create(request: Request, user=Depends(manager), db=Depends(get_session), api
 
 
 @router.delete("/binance/apikey/{apikey}")
-def create(apikey: str, user=Depends(manager), db=Depends(get_session)):
+def delete(apikey: str, user=Depends(manager), db=Depends(get_session)):
     logging.info(
         "receive DELETE /binance/apikey: api_key={0}".format(apikey))
     try:
@@ -82,3 +87,16 @@ def set_default(apikey: str, user=Depends(manager), db=Depends(get_session)):
     except Exception as e:
         logging.error(
             "failed to set binance API Key {0} as default, error: {1}".format(apikey, str(e)))
+
+
+def do_test_api(apiKey, apiSecretKey):
+    client = Client(api_key=apiKey,
+                    api_secret=apiSecretKey, tld="com", testnet=False)
+
+    try:
+        balance = client.futures_account_balance()
+        logging.info("test api result: {}".format(balance.values))
+        return True
+    except Exception as e:
+        logging.info("test api error: {}".format(str(e)))
+        return False
