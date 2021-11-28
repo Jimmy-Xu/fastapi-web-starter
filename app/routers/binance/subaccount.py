@@ -20,8 +20,6 @@ templates = Jinja2Templates(directory="templates/")
 
 @router.get("/binance/subaccount", response_class=HTMLResponse)
 def get_subaccount(request: Request, user=Depends(manager)):
-    tag = "flower"
-    result = "Type a number"
 
     apiKey, secretKey = get_default_api_keys(
         user.api_keys,  Config.ctrKey, 'binance', user.username)
@@ -30,131 +28,43 @@ def get_subaccount(request: Request, user=Depends(manager)):
             "failed to get default api key for user {0}".format(user.uesrname))
         return
 
-    logging.debug(
-        "found default api key({0}/{1}) for user {2}".format(apiKey, secretKey, user.username))
-    client = Client(api_key=apiKey,
-                    api_secret=secretKey, testnet=False)
-    '''
-    {
-        "data": {
-            "isLocked": false,
-            "plannedRecoverTime": 0,
-            "triggerCondition": {
-                "UFR": 300,
-                "IFER": 150,
-                "GCR": 150
-            },
-            "updateTime": 1637078870786
-        }
-    }
-    '''
-    try:
-        server_time = client.get_server_time()
-        logging.info("server_time result: {}".format(server_time))
-    except Exception as e:
-        logging.info("server_time error: {}".format(str(e)))
+    # logging.debug(
+    #     "found default api key({0}/{1}) for user {2}".format(apiKey, secretKey, user.username))
 
-    try:
-        system_status = client.get_system_status()
-        logging.info("get_system_status result: {}".format(system_status))
-    except Exception as e:
-        logging.info("get_system_status error: {}".format(str(e)))
-
-    try:
-        rlt = client.get_account_api_trading_status()
-        logging.info("trading_status result: {}".format(rlt))
-    except Exception as e:
-        logging.info("trading_status error: {}".format(str(e)))
-
-    # sub_account_list = client.get_sub_account_list()
-    sub_account_list = {
-        "subAccounts": [
-            {
-                "email": "testsub@gmail.com",
-                "isFreeze": False,
-                "createTime": 1544433328000
-            },
-            {
-                "email": "virtual@oxebmvfonoemail.com",
-                "isFreeze": False,
-                "createTime": 1544433328000
-            }
-        ]
-    }
-
-    fake_assets = {
-        "testsub@gmail.com": {
-            "balances": [
-                {
-                    "asset": "ADA",
-                    "free": 10000,
-                    "locked": 0
-                },
-                {
-                    "asset": "BNB",
-                    "free": 10003,
-                    "locked": 0
-                },
-                {
-                    "asset": "BTC",
-                    "free": 11467.6399,
-                    "locked": 0
-                },
-                {
-                    "asset": "ETH",
-                    "free": 10004.995,
-                    "locked": 0
-                },
-                {
-                    "asset": "USDT",
-                    "free": 11652.14213,
-                    "locked": 0
-                }
-            ],
-        },
-        "virtual@oxebmvfonoemail.com": {
-            "balances": [
-                {
-                    "asset": "ADA",
-                    "free": 20000,
-                    "locked": 0
-                },
-                {
-                    "asset": "BNB",
-                    "free": 20003,
-                    "locked": 0
-                },
-                {
-                    "asset": "BTC",
-                    "free": 21467.6399,
-                    "locked": 0
-                },
-                {
-                    "asset": "ETH",
-                    "free": 20004.995,
-                    "locked": 0
-                },
-                {
-                    "asset": "USDT",
-                    "free": 21652.14213,
-                    "locked": 0
-                }
-            ],
-        }
-    }
+    client = Client(api_key=apiKey, api_secret=secretKey, testnet=False)
 
     sub_account_assets = {}
-    for item in sub_account_list['subAccounts']:
-        # client.get_sub_account_assets(email=item['email'])
-        sub_account_assets[item['email']] = fake_assets[item['email']]
+    error = ""
+    try:
+        # sub_account_assets = client.get_sub_account_assets()
 
-    flora = ['aaa', 'bbb', 'ccc', 'ddd']
-    fauna = ['111', '222', '333', '444']
-    table = {}
-
-    return templates.TemplateResponse(
-        'binance/subaccount.html',
-        context={'request': request, 'result': result, 'tag': tag, 'flora': flora, 'fauna': fauna, 'table': table, 'sub_account_assets': sub_account_assets})
+        # for debug
+        sub_account_assets = {
+            "testsub@gmail.com": {
+                "balances": [
+                    {"asset": "ADA", "free": 10000, "locked": 0},
+                    {"asset": "BNB", "free": 10003, "locked": 0},
+                    {"asset": "BTC", "free": 11467.6399, "locked": 0},
+                    {"asset": "ETH", "free": 10004.995, "locked": 0},
+                    {"asset": "USDT", "free": 11652.14213, "locked": 0}],
+            },
+            "virtual@oxebmvfonoemail.com": {
+                "balances": [
+                    {"asset": "ADA", "free": 20000, "locked": 0},
+                    {"asset": "BNB", "free": 20003, "locked": 0},
+                    {"asset": "BTC", "free": 21467.6399, "locked": 0},
+                    {"asset": "ETH", "free": 20004.995, "locked": 0},
+                    {"asset": "USDT", "free": 21652.14213, "locked": 0}],
+            }
+        }
+    except Exception as e:
+        logging.error(
+            "failed to get sub account assets, error:{0}".format(str(e)))
+        error = "failed to get sub account assets, internal server error"
+    finally:
+        return templates.TemplateResponse(
+            'binance/subaccount.html',
+            context={'request': request, 'sub_account_assets': sub_account_assets, 'error': error})
 
 
 @router.post("/binance/subaccount", response_class=HTMLResponse)
