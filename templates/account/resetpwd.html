@@ -6,17 +6,132 @@
 {% block head %}
 {{ super() }}
 
-
 {% endblock %}
 
 {% block page_content %}
-<h3 class="cap">Reset user password</h1>
 
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Change Password</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="/*col-sm-6 col-sm-offset-3*/">
+            <form method="post" id="passwordForm" action="/account/resetpwd">
+                <div style="margin: 5px 0px 5px 0px;">
+                    <input type="password" class="input-lg form-control" name="password0" id="password0"
+                        placeholder="Current Password" autocomplete="off" value="{{password0}}" required>
+                </div>
+                <input type="password" class="input-lg form-control" name="password1" id="password1"
+                    placeholder="New Password" autocomplete="off" value="{{password1}}" required>
+                <div class="row" style="font-size:12px;color:gray">
+                    <div class="col-sm-6">
+                        <span id="8char" class="fa fa-times" style="color:#FF0004;"></span> 8 Characters
+                        Long<br>
+                        <span id="ucase" class="fa fa-times" style="color:#FF0004;"></span> One Uppercase
+                        Letter
+                    </div>
+                    <div class="col-sm-6">
+                        <span id="lcase" class="fa fa-times" style="color:#FF0004;"></span> One Lowercase
+                        Letter<br>
+                        <span id="num" class="fa fa-times" style="color:#FF0004;"></span> One Number
+                    </div>
+                </div>
+                <input type="password" class="input-lg form-control" name="password2" id="password2"
+                    placeholder="Repeat Password" autocomplete="off" value="{{password2}}" required>
+                <div class="row" style="font-size:12px;color:gray">
+                    <div class="col-sm-12">
+                        <span id="pwmatch" class="fa fa-times" style="color:#FF0004;"></span> Passwords
+                        Match
+                    </div>
+                </div>
+                <input type="submit" class="col-xs-12 btn btn-primary btn-load" data-loading-text="Changing Password..."
+                    value="Submit">
+            </form>
+            {% if error != "" %}
+            <div class="container">
+                <div class="row">
+                    <div class="span4">
+                        <div class="alert" style="color:red">
+                            <a class="close" data-dismiss="alert"> x </a>
+                            <strong>Warning!</strong> {{ error }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+        <!--/col-sm-6-->
+    </div>
+    <!--/row-->
+</div>
 
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
 
+<script>
+    $(document).ready(function () {
+        $("input[type=password]").keyup(function () {
+            var ucase = new RegExp("[A-Z]+");
+            var lcase = new RegExp("[a-z]+");
+            var num = new RegExp("[0-9]+");
+
+            if ($("#password1").val().length >= 8) {
+                $("#8char").removeClass("fa-times");
+                $("#8char").addClass("fa-check");
+                $("#8char").css("color", "#00A41E");
+            } else {
+                $("#8char").removeClass("fa-check");
+                $("#8char").addClass("fa-times");
+                $("#8char").css("color", "#FF0004");
+            }
+
+            if (ucase.test($("#password1").val())) {
+                $("#ucase").removeClass("fa-times");
+                $("#ucase").addClass("fa-check");
+                $("#ucase").css("color", "#00A41E");
+            } else {
+                $("#ucase").removeClass("fa-check");
+                $("#ucase").addClass("fa-times");
+                $("#ucase").css("color", "#FF0004");
+            }
+
+            if (lcase.test($("#password1").val())) {
+                $("#lcase").removeClass("fa-times");
+                $("#lcase").addClass("fa-check");
+                $("#lcase").css("color", "#00A41E");
+            } else {
+                $("#lcase").removeClass("fa-check");
+                $("#lcase").addClass("fa-times");
+                $("#lcase").css("color", "#FF0004");
+            }
+
+            if (num.test($("#password1").val())) {
+                $("#num").removeClass("fa-times");
+                $("#num").addClass("fa-check");
+                $("#num").css("color", "#00A41E");
+            } else {
+                $("#num").removeClass("fa-check");
+                $("#num").addClass("fa-times");
+                $("#num").css("color", "#FF0004");
+            }
+
+            if ($("#password1").val() == $("#password2").val()) {
+                $("#pwmatch").removeClass("fa-times");
+                $("#pwmatch").addClass("fa-check");
+                $("#pwmatch").css("color", "#00A41E");
+            } else {
+                $("#pwmatch").removeClass("fa-check");
+                $("#pwmatch").addClass("fa-times");
+                $("#pwmatch").css("color", "#FF0004");
+            }
+        });
+    })
+
+</script>
 
 {% endblock %}

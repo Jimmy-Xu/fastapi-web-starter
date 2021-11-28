@@ -9,7 +9,7 @@ from app.db import get_session
 from app.db.models import ApiKey, Post, User
 from app.library.helpers import mask_text
 from app.models import api_keys
-from app.security import hash_password, manager
+from app.security import hash_password, verify_password, manager
 
 from typing import Tuple
 
@@ -60,6 +60,36 @@ def create_user(name: str, password: str, db: Session, is_admin: bool = False) -
     db.add(user)
     db.commit()
     return user
+
+
+def reset_user_pwd(name: str, old_password: str, new_password: str, db: Session):
+    """
+    update user password and commits a user object to the database
+
+    Args:
+        name: The name of the user
+        password: The plaintext password
+        db: The active db session
+
+    Returns:
+        The updated user.
+    """
+    try:
+        user = db.query(User).filter_by(username=name).first()
+        if verify_password(old_password, user.password):
+            new_hashed_pw = hash_password(new_password)
+            user.password = new_hashed_pw
+            db.commit()
+            logging.info("reset password for user:{0} OK".format(name))
+            return True, ""
+        else:
+            logging.error(
+                "failed to reset password for user:{0}, error: current password is wrong".format(name))
+            return False, "current password is wrong"
+    except Exception as e:
+        logging.error(
+            "failed to reset password for user:{0}, error:{1}".format(name, str(e)))
+        return False, "internal server error"
 
 
 def create_post(text: str, owner: User, db: Session) -> Post:

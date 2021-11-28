@@ -9,14 +9,6 @@
     </div>
 
     <ul class="list-unstyled components">
-        <li class="active">
-            <a href="#accountSubmenu" data-toggle="collapse" aria-expanded="false">Account</a>
-            <ul class="collapse list-unstyled show" id="accountSubmenu">
-                <li>
-                    <a href="/account/resetpwd">Reset Password</a>
-                </li>
-            </ul>
-        </li>
         <li>
             <a href="#BinanceSetting" data-toggle="collapse" aria-expanded="true">Binance</a>
             <ul class="collapse list-unstyled show" id="BinanceSetting">
@@ -37,11 +29,16 @@
                 </li>
             </ul>
         </li>
-        <!-- <li>
-            <a href="/setting/portfolio">Portfolio</a>
-        </li> -->
-        <!-- <li>
-            <a href="/setting/contact">Contact</a>
-        </li> -->
+        <li class="active">
+            <a href="#accountSubmenu" data-toggle="collapse" aria-expanded="false">Account</a>
+            <ul class="collapse list-unstyled show" id="accountSubmenu">
+                <li>
+                    <a href="/account/resetpwd">Reset Password</a>
+                </li>
+                <li>
+                    <a href="/account/logout">Logout</a>
+                </li>
+            </ul>
+        </li>
     </ul>
 </nav>

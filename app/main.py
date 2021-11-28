@@ -20,7 +20,9 @@ from app.routers.binance import subaccount as binance_subaccount
 from app.routers.binance import apikey as binance_apikey
 from app.routers.ftx import accounts as ftx_accounts
 from app.routers.ftx import apikey as ftx_apikey
-from app.routers.account import config as account_config
+from app.routers.account import resetpwd as account_resetpwd
+from app.routers.account import logout as account_logout
+from fastapi.param_functions import Depends
 
 import logging
 
@@ -57,12 +59,13 @@ app.include_router(binance_apikey.router)
 app.include_router(ftx_accounts.router)
 app.include_router(ftx_apikey.router)
 # account
-app.include_router(account_config.router)
+app.include_router(account_resetpwd.router)
+app.include_router(account_logout.router)
 
 
 @app.get("/", response_class=HTMLResponse)
-async def home(request: Request):
-    return templates.TemplateResponse("home.html", {"request": request})
+async def home(request: Request,  user=Depends(manager)):
+    return templates.TemplateResponse("home.html", {"request": request, 'username':user.username})
 
 
 @app.get("/setting/{page_name}", response_class=HTMLResponse)
