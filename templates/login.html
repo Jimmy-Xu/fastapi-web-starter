@@ -52,11 +52,12 @@
     <p>
       <input type="submit" id="login" value="Login">
     </p>
+
     <p>
-    <div class="row" style="min-height:20px; text-align: left; font-size: 16px; padding-bottom: 10px;">
+    <div style="min-height:20px; text-align: left; font-size: 16px; padding-bottom: 10px;">
       <div class="text-danger font-weight-bold">
         {% for error in errors %}
-        <li>{{error}}</li>
+        {{error}}
         {% endfor %}
       </div>
 
@@ -71,7 +72,7 @@
       </div>
     </div>
     </p>
-    <p></p>
+
   </form>
   <!-- <div id="create-account-wrap">
           <p>Not a member? <a href="#">Create Account</a><p>

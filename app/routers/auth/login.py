@@ -24,7 +24,7 @@ templates = Jinja2Templates(directory="templates")
 @router.get("/login", response_class=HTMLResponse)
 def login_get(request: Request):
     print("get login page")
-    return templates.TemplateResponse("login.html", context={"request": request})
+    return templates.TemplateResponse("login.html", context={"request": request, 'username': '', 'password': ''})
 
 
 @router.post("/login", response_class=HTMLResponse)
@@ -53,6 +53,8 @@ async def login(request: Request, db: Session = Depends(get_session)):
         except HTTPException as e:
             logging.error("HTTPException: {0}".format(str(e)))
             form.__dict__.update(msg="")
+            form.__dict__.update(username=form.username)
+            form.__dict__.update(password=form.password)
             form.__dict__.get("errors").append(str(e))
             return templates.TemplateResponse("login.html", form.__dict__)
     return templates.TemplateResponse("login.html", form.__dict__)

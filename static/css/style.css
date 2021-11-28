@@ -62,7 +62,7 @@ a:focus {
     left: -250px;
     height: 100vh;
     z-index: 999;
-    background: #7386D5;
+    background:#6d7fcc;
     color: #fff;
     transition: all 0.3s;
     overflow-y: scroll;
@@ -114,7 +114,7 @@ a:focus {
 }
 
 #sidebar ul.components {
-    padding: 20px 0;
+    /*padding: 20px 0;*/
     border-bottom: 1px solid #47748b;
 }
 
@@ -159,7 +159,7 @@ a[data-toggle="collapse"] {
 ul ul a {
     font-size: 0.9em !important;
     padding-left: 30px !important;
-    background: #6d7fcc;
+    background:  #7386D5;
 }
 
 ul.CTAs {
