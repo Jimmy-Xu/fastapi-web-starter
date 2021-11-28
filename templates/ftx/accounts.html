@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% set active_page = "FTXAccounts" %}
 
-{% block title %}FTX Accounts{% endblock %}
+{% block title %}Accounts{% endblock %}
 
 {% block head %}
 {{ super() }}
@@ -10,60 +10,93 @@
 {% endblock %}
 
 {% block page_content %}
-<h4 class="cap">(FTX)Blance of all accounts</h4>
 
-
-<form method="post" id="category">
-    <div class="accounts" id="accountsExample">
-        {% for email, data in sub_account_assets.items() %}
-        <div class="card">
-            <div class="card-header" id="heading_{{ loop.index }}">
-                <h2 class="mb-0">
-                    <button class="btn btn-link" type="button" data-toggle="collapse"
-                        data-target="#collapse_{{ loop.index }}" aria-controls="collapse_{{ loop.index }}">
-                        {{ email }}
-                    </button>
-
-                </h2>
-            </div>
-
-            <div id="collapse_{{ loop.index }}" class="collapse" aria-labelledby="heading_{{ loop.index }}"
-                data-parent="#accountsExample">
-                <div class="card-body">
-
-                    {% if tag == name %}
-                    {% set checked="checked" %}
-                    {% endif %}
-                    <div class="form-check form-check-inline">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>NO.</th>
-                                    <th>Asset</th>
-                                    <th>Free</th>
-                                    <th>Locked</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for item in data['balances'] %}
-                                <tr>
-                                    <td>{{ loop.index }}</td>
-                                    <td>{{ item['asset'] }}
-                                    <td>{{ item['free'] }}</td>
-                                    <td>{{ item['locked'] }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-
-                </div>
-            </div>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h5>(FTX)Accounts balance</h5>
         </div>
-        {% endfor %}
     </div>
+    <div class="row">
+        <div class="/*col-sm-6 col-sm-offset-3*/" style="width: 100%;">
 
-</form>
+
+            <form method="post" id="category">
+                <div class="subAccount" id="subAccountExample">
+                    {% for account, data in all_balances['result'].items() %}
+                    <div class="card">
+                        <div class="card-header" id="heading_{{ loop.index }}">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link" type="button" data-toggle="collapse"
+                                    data-target="#collapse_{{ loop.index }}" aria-controls="collapse_{{ loop.index }}">
+                                    {{ account }}
+                                </button>
+
+                            </h2>
+                        </div>
+
+                        <div id="collapse_{{ loop.index }}" class="collapse" aria-labelledby="heading_{{ loop.index }}"
+                            data-parent="#subAccountExample">
+                            <div class="card-body">
+
+                                {% if tag == name %}
+                                {% set checked="checked" %}
+                                {% endif %}
+                                <div class="form-check form-check-inline">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <!-- <th>NO.</th> -->
+                                                <th>Coin</th>
+                                                <th>Free</th>
+                                                <th>Usd<br />Value</th>
+                                                <th>Spot<br />Borrow</th>
+                                                <th>Available<br />Without<br />Borrow</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for item in data %}
+                                            <tr>
+                                                <!-- <td>{{ loop.index }}</td> -->
+                                                <td>{{ item['coin'] }}
+                                                <td>{{ item['free'] }}</td>
+                                                <td>{{ item['usdValue'] }}</td>
+                                                <td>{{ item['spotBorrow'] }}</td>
+                                                <td>{{ item['availableWithoutBorrow'] }}</td>
+                                                <td>{{ item['total'] }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if error %}
+                <div class="container">
+                    <div class="row">
+                        <div class="span4">
+                            <div class="alert" style="color:red">
+                                <a class="close" data-dismiss="alert"> x </a>
+                                <strong>Warning!</strong> {{ error }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </form>
+
+        </div>
+        <!--/col-sm-6-->
+    </div>
+    <!--/row-->
+</div>
+
+
 
 
 {% endblock %}

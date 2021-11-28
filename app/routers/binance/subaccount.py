@@ -20,6 +20,8 @@ templates = Jinja2Templates(directory="templates/")
 
 @router.get("/binance/subaccount", response_class=HTMLResponse)
 def get_subaccount(request: Request, user=Depends(manager)):
+    logging.info(
+        "receive GET /binance/subaccount: user={0}".format(user.username))
 
     apiKey, secretKey = get_default_api_keys(
         user.api_keys,  Config.ctrKey, 'binance', user.username)
