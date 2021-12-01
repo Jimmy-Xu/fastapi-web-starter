@@ -1,27 +1,9 @@
 import logging
-import os.path
 from Cryptodome import Random
-import markdown
-
-import os
 import binascii
-
 import Cryptodome.Cipher.AES as AES
-from app.library.aes_ctr import CTRCipher, int_from_bytes, int_to_bytes
-
+from app.library.aes_ctr import CTRCipher
 from app.models.api_keys import ApiKeyResponse
-
-
-def openfile(filename):
-    filepath = os.path.join("app/pages/", filename)
-    with open(filepath, "r", encoding="utf-8") as input_file:
-        text = input_file.read()
-
-    html = markdown.markdown(text)
-    data = {
-        "text": html
-    }
-    return data
 
 
 def aes_encrypt(plaintext, ctr_key):

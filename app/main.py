@@ -2,10 +2,10 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-import jwt
-from sqlalchemy.pool import manage
 from starlette.responses import RedirectResponse
 
+import jwt
+import logging
 from .library.helpers import *
 
 from app.routers.auth import login
@@ -24,7 +24,6 @@ from app.routers.account import resetpwd as account_resetpwd
 from app.routers.account import logout as account_logout
 from fastapi.param_functions import Depends
 
-import logging
 
 logging.basicConfig(
     level=logging.DEBUG,              # 定义输出到文件的log级别，
@@ -65,13 +64,7 @@ app.include_router(account_logout.router)
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request,  user=Depends(manager)):
-    return templates.TemplateResponse("home.html", {"request": request, 'username':user.username})
-
-
-@app.get("/setting/{page_name}", response_class=HTMLResponse)
-async def show_page(request: Request, page_name: str):
-    data = openfile(page_name+".md")
-    return templates.TemplateResponse("page.html", {"request": request, "data": data})
+    return templates.TemplateResponse("home.html", {"request": request, 'username': user.username})
 
 
 # https://github.com/MushroomMaula/fastapi_login/issues/28
