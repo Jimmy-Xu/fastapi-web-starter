@@ -14,7 +14,7 @@ templates = Jinja2Templates(directory="templates/")
 
 
 @router.get("/account/resetpwd", response_class=HTMLResponse)
-def form_get(request: Request, db=Depends(get_session), user=Depends(manager)):
+def get(request: Request, db=Depends(get_session), user=Depends(manager)):
     logging.info(
         "receive GET /account/resetpwd, current user:{0}".format(user.username))
 
@@ -22,7 +22,7 @@ def form_get(request: Request, db=Depends(get_session), user=Depends(manager)):
 
 
 @router.post("/account/resetpwd", response_class=HTMLResponse)
-def form_get(request: Request, user=Depends(manager), db=Depends(get_session), password0: str = Form(...), password1: str = Form(...), password2: str = Form(...)):
+def resetpwd(request: Request, user=Depends(manager), db=Depends(get_session), password0: str = Form(...), password1: str = Form(...), password2: str = Form(...)):
     logging.info(
         "receive POST /account/resetpwd, current user:{0}, password1:{1}, password2:{2}".format(user.username, password1, password2))
 

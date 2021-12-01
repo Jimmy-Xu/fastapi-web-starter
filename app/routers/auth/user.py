@@ -1,3 +1,4 @@
+import logging
 from fastapi import APIRouter, Depends
 from sqlalchemy.exc import IntegrityError
 
@@ -18,6 +19,9 @@ def register(user: UserCreate, db=Depends(get_session)) -> UserReponse:
     """
     Registers a new user
     """
+    logging.info(
+        "receive POST /user/register, current user:{0}".format(user.username))
+
     try:
         user = create_user(user.username, user.password, db)
         return UserReponse.from_orm(user)
@@ -30,6 +34,10 @@ def read_user(username, active_user=Depends(manager), db=Depends(get_session)) -
     """
     Shows information about the user
     """
+
+    logging.info(
+        "receive GET /user/{username}, current user:{0}".format(username))
+
     user = get_user_by_name(username, db)
 
     if user is None:

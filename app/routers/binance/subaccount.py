@@ -4,23 +4,28 @@ from fastapi.templating import Jinja2Templates
 from fastapi.param_functions import Depends
 
 from app.config import Config
+from app.security import manager
+from app.library.helpers import get_default_api_keys, is_dev_mode
+
+import os
 import logging
 from binance import Client
 
-from app.config import Config
-from app.security import manager
-from app.library.helpers import get_default_api_keys
 
-
-router = APIRouter()
+router = APIRouter(
+    prefix="/binance"
+)
 templates = Jinja2Templates(directory="templates/")
 
 
-@router.get("/binance/subaccount", response_class=HTMLResponse)
+@router.get("/subaccount", response_class=HTMLResponse)
 def get_subaccount(request: Request, user=Depends(manager)):
-    logging.info(
-        "receive GET /binance/subaccount: user={0}".format(user.username))
 
+    dev_mode = is_dev_mode()
+    logging.info(
+        "receive GET /binance/subaccount: user={0}, dev_mode={1}".format(user.username, dev_mode))
+
+    # get default binance api key
     apiKey, secretKey = get_default_api_keys(
         user.api_keys,  Config.ctrKey, 'binance', user.username)
     if apiKey is None or secretKey is None:
@@ -36,27 +41,29 @@ def get_subaccount(request: Request, user=Depends(manager)):
     sub_account_assets = {}
     error = ""
     try:
-        # sub_account_assets = client.get_sub_account_assets()
 
-        # for debug
-        sub_account_assets = {
-            "testsub@gmail.com": {
-                "balances": [
-                    {"asset": "ADA", "free": 10000, "locked": 0},
-                    {"asset": "BNB", "free": 10003, "locked": 0},
-                    {"asset": "BTC", "free": 11467.6399, "locked": 0},
-                    {"asset": "ETH", "free": 10004.995, "locked": 0},
-                    {"asset": "USDT", "free": 11652.14213, "locked": 0}],
-            },
-            "virtual@oxebmvfonoemail.com": {
-                "balances": [
-                    {"asset": "ADA", "free": 20000, "locked": 0},
-                    {"asset": "BNB", "free": 20003, "locked": 0},
-                    {"asset": "BTC", "free": 21467.6399, "locked": 0},
-                    {"asset": "ETH", "free": 20004.995, "locked": 0},
-                    {"asset": "USDT", "free": 21652.14213, "locked": 0}],
+        if not dev_mode:
+            sub_account_assets = client.get_sub_account_assets()
+        else:
+            # for debug
+            sub_account_assets = {
+                "testsub@gmail.com": {
+                    "balances": [
+                        {"asset": "ADA", "free": 10000, "locked": 0},
+                        {"asset": "BNB", "free": 10003, "locked": 0},
+                        {"asset": "BTC", "free": 11467.6399, "locked": 0},
+                        {"asset": "ETH", "free": 10004.995, "locked": 0},
+                        {"asset": "USDT", "free": 11652.14213, "locked": 0}],
+                },
+                "virtual@oxebmvfonoemail.com": {
+                    "balances": [
+                        {"asset": "ADA", "free": 20000, "locked": 0},
+                        {"asset": "BNB", "free": 20003, "locked": 0},
+                        {"asset": "BTC", "free": 21467.6399, "locked": 0},
+                        {"asset": "ETH", "free": 20004.995, "locked": 0},
+                        {"asset": "USDT", "free": 21652.14213, "locked": 0}],
+                }
             }
-        }
     except Exception as e:
         logging.error(
             "failed to get sub account assets, error:{0}".format(str(e)))
@@ -65,8 +72,3 @@ def get_subaccount(request: Request, user=Depends(manager)):
         return templates.TemplateResponse(
             'binance/subaccount.html',
             context={'request': request, 'sub_account_assets': sub_account_assets, 'error': error})
-
-
-@router.post("/binance/subaccount", response_class=HTMLResponse)
-def post_subaccount(request: Request, tag: str = Form(...)):
-    return templates.TemplateResponse('subaccount.html', context={'request': request, 'tag': tag})

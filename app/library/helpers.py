@@ -1,9 +1,14 @@
+import os
 import logging
 from Cryptodome import Random
 import binascii
 import Cryptodome.Cipher.AES as AES
 from app.library.aes_ctr import CTRCipher
 from app.models.api_keys import ApiKeyResponse
+
+
+def is_dev_mode():
+    return True if str(os.environ.get("DEV_MODE")).lower() == "true" else False
 
 
 def aes_encrypt(plaintext, ctr_key):

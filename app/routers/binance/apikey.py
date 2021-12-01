@@ -14,27 +14,28 @@ from app.library.helpers import mask_api_keys, aes_encrypt, mask_text
 
 from binance import Client
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/binance"
+)
 templates = Jinja2Templates(directory="templates/")
 
 
-@router.get("/binance/apikey", response_class=HTMLResponse)
-def form_get(request: Request, user=Depends(manager)):
-    test_api = "0"
-    if 'test_api' in request.query_params:
-        test_api = request.query_params["test_api"]
+@router.get("/apikey", response_class=HTMLResponse)
+def get(request: Request, user=Depends(manager)):
+
     logging.info(
-        "receive GET /binance/apikey, test_api:{0}, current user:{1}".format(test_api, user.username))
+        "receive GET /binance/apikey, current user:{1}".format(user.username))
 
     apiKeyList = mask_api_keys(user.api_keys, Config.ctrKey, 'binance')
 
-    print("list api_keys: {0}".format(len(apiKeyList)))
+    print("found api_keys: {0}".format(len(apiKeyList)))
 
     return templates.TemplateResponse('binance/apikey.html', context={'request': request, 'result': apiKeyList})
 
 
-@router.post("/binance/apikey", response_class=HTMLResponse)
+@router.post("/apikey", response_class=HTMLResponse)
 def create(request: Request, user=Depends(manager), db=Depends(get_session), api_key: str = Form(...), secret_key: str = Form(...)):
+
     logging.info(
         "receive POST /binance/apikey: api_key={0}, secret_key(plain)={1}".format(api_key, mask_text(secret_key)))
 
@@ -61,10 +62,10 @@ def create(request: Request, user=Depends(manager), db=Depends(get_session), api
     return templates.TemplateResponse('binance/apikey.html', context={'request': request, 'result': apiKeyList, 'api_key': api_key, 'secret_key': secret_key,  'error': err})
 
 
-@router.delete("/binance/apikey/{apikey}")
+@router.delete("/apikey/{apikey}")
 def delete(apikey: str, user=Depends(manager), db=Depends(get_session)):
     logging.info(
-        "receive DELETE /binance/apikey: api_key={0}".format(apikey))
+        "receive DELETE /binance/apikey/{apikey}: api_key={0}".format(apikey))
     try:
         # delete api key
         delete_api_key(
@@ -75,7 +76,7 @@ def delete(apikey: str, user=Depends(manager), db=Depends(get_session)):
             "failed to delete binance API Key {0}, error: {1}".format(apikey, str(e)))
 
 
-@router.post("/binance/apikey/set_default")
+@router.post("/apikey/set_default")
 def set_default(apikey: str, user=Depends(manager), db=Depends(get_session)):
     logging.info(
         "receive POST /binance/apikey/set_default: api_key={0}".format(apikey))
@@ -87,16 +88,3 @@ def set_default(apikey: str, user=Depends(manager), db=Depends(get_session)):
     except Exception as e:
         logging.error(
             "failed to set binance API Key {0} as default, error: {1}".format(apikey, str(e)))
-
-
-def do_test_api(apiKey, apiSecretKey):
-    client = Client(api_key=apiKey,
-                    api_secret=apiSecretKey, tld="com", testnet=False)
-
-    try:
-        balance = client.futures_account_balance()
-        logging.info("test api result: {}".format(balance.values))
-        return True
-    except Exception as e:
-        logging.info("test api error: {}".format(str(e)))
-        return False

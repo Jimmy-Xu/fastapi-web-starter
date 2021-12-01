@@ -18,13 +18,13 @@ templates = Jinja2Templates(directory="templates")
 
 @router.get("/login", response_class=HTMLResponse)
 def login_get(request: Request):
-    print("get login page")
+    logging.info("receive GET /login")
     return templates.TemplateResponse("login.html", context={"request": request, 'username': '', 'password': ''})
 
 
 @router.post("/login", response_class=HTMLResponse)
 async def login(request: Request, db: Session = Depends(get_session)):
-    print("receive login request")
+    logging.info("receive POST /login")
     form = LoginForm(request)
     await form.load_data()
     if await form.is_valid():

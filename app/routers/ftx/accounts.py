@@ -6,17 +6,21 @@ from fastapi.param_functions import Depends
 from app.config import Config
 import logging
 
-from app.library.helpers import get_default_api_keys
+from app.library.helpers import get_default_api_keys, is_dev_mode
 from app.security import manager
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/ftx"
+)
 templates = Jinja2Templates(directory="templates/")
 
 
-@router.get("/ftx/accounts", response_class=HTMLResponse)
+@router.get("/accounts", response_class=HTMLResponse)
 def get_accounts(request: Request, user=Depends(manager)):
+
+    dev_mode = is_dev_mode()
     logging.info(
-        "receive GET /ftx/accounts: user={0}".format(user.username))
+        "receive GET /ftx/accounts: user={0}, dev_mode={1}".format(user.username, dev_mode))
 
     apiKey, secretKey = get_default_api_keys(
         user.api_keys,  Config.ctrKey, 'ftx', user.username)
@@ -31,7 +35,6 @@ def get_accounts(request: Request, user=Depends(manager)):
     all_balances = {}
     error = ""
     try:
-
         # for debug
         all_balances = {
             "success": True,

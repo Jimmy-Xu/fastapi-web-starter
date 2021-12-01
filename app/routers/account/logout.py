@@ -12,7 +12,11 @@ templates = Jinja2Templates(directory="templates/")
 
 
 @router.get('/account/logout', response_class=HTMLResponse)
-def protected_route(request: Request, user=Depends(manager)):
+def logout(request: Request, user=Depends(manager)):
+
+    logging.info(
+        "receive GET /account/logout, current user:{0}".format(user.username))
+
     resp = RedirectResponse(url="/login", status_code=302)
     manager.set_cookie(resp, "")
     return resp

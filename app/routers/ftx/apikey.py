@@ -12,12 +12,14 @@ from app.db.actions import create_api_key, delete_api_key, set_default_api_key
 from app.library.helpers import mask_api_keys, aes_encrypt, mask_text
 
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/ftx"
+)
 templates = Jinja2Templates(directory="templates/")
 
 
-@router.get("/ftx/apikey", response_class=HTMLResponse)
-def form_get(request: Request, user=Depends(manager)):
+@router.get("/apikey", response_class=HTMLResponse)
+def get(request: Request, user=Depends(manager)):
     logging.info(
         "receive GET /ftx/apikey, current user:{0}".format(user.username))
 
@@ -27,7 +29,7 @@ def form_get(request: Request, user=Depends(manager)):
     return templates.TemplateResponse('ftx/apikey.html', context={'request': request, 'result': apiKeyList})
 
 
-@router.post("/ftx/apikey", response_class=HTMLResponse)
+@router.post("/apikey", response_class=HTMLResponse)
 def create(request: Request, user=Depends(manager), db=Depends(get_session), api_key: str = Form(...), secret_key: str = Form(...)):
     logging.info(
         "receive POST /ftx/apikey: api_key={0}, secret_key(plain)={1}".format(api_key, mask_text(secret_key)))
@@ -55,8 +57,8 @@ def create(request: Request, user=Depends(manager), db=Depends(get_session), api
     return templates.TemplateResponse('ftx/apikey.html', context={'request': request, 'result': apiKeyList, 'api_key': api_key, 'secret_key': secret_key,  'error': err})
 
 
-@router.delete("/ftx/apikey/{apikey}")
-def create(apikey: str, user=Depends(manager), db=Depends(get_session)):
+@router.delete("/apikey/{apikey}")
+def delete(apikey: str, user=Depends(manager), db=Depends(get_session)):
     logging.info(
         "receive DELETE /ftx/apikey: api_key={0}".format(apikey))
     try:
@@ -69,7 +71,7 @@ def create(apikey: str, user=Depends(manager), db=Depends(get_session)):
             "failed to delete ftx API Key {0}, error: {1}".format(apikey, str(e)))
 
 
-@router.post("/ftx/apikey/set_default")
+@router.post("/apikey/set_default")
 def set_default(apikey: str, user=Depends(manager), db=Depends(get_session)):
     logging.info(
         "receive POST /ftx/apikey/set_default: api_key={0}".format(apikey))
@@ -81,12 +83,3 @@ def set_default(apikey: str, user=Depends(manager), db=Depends(get_session)):
     except Exception as e:
         logging.error(
             "failed to set ftx API Key {0} as default, error: {1}".format(apikey, str(e)))
-
-
-@router.get("/ftx/apikey/test", response_class=HTMLResponse)
-def test(request: Request, user=Depends(manager)):
-    logging.info(
-        "receive GET /ftx/apikey/test, current user:{0}".format(user.username))
-
-    print("test api_key result: {0}".format("OK"))
-    return templates.TemplateResponse('ftx/test.html', context={'request': request})

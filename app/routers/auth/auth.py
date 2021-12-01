@@ -1,3 +1,4 @@
+import logging
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_login.exceptions import InvalidCredentialsException
@@ -19,6 +20,9 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     """
     Logs in the user provided by form_data.username and form_data.password
     """
+    logging.info(
+        "receive POST /login, current user:{0}".format(form_data.username))
+
     user = get_user_by_name(form_data.username, db)
     if user is None:
         raise InvalidCredentialsException
