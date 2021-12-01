@@ -24,7 +24,7 @@ templates = Jinja2Templates(directory="templates/")
 def get(request: Request, user=Depends(manager)):
 
     logging.info(
-        "receive GET /binance/apikey, current user:{1}".format(user.username))
+        "receive GET /binance/apikey, current user:{0}".format(user.username))
 
     apiKeyList = mask_api_keys(user.api_keys, Config.ctrKey, 'binance')
 
@@ -65,7 +65,7 @@ def create(request: Request, user=Depends(manager), db=Depends(get_session), api
 @router.delete("/apikey/{apikey}")
 def delete(apikey: str, user=Depends(manager), db=Depends(get_session)):
     logging.info(
-        "receive DELETE /binance/apikey/{apikey}: api_key={0}".format(apikey))
+        "receive DELETE /binance/apikey/{0}".format(apikey))
     try:
         # delete api key
         delete_api_key(

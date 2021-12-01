@@ -60,7 +60,7 @@ def create(request: Request, user=Depends(manager), db=Depends(get_session), api
 @router.delete("/apikey/{apikey}")
 def delete(apikey: str, user=Depends(manager), db=Depends(get_session)):
     logging.info(
-        "receive DELETE /ftx/apikey: api_key={0}".format(apikey))
+        "receive DELETE /ftx/apikey/{0}".format(apikey))
     try:
         # delete api key
         delete_api_key(

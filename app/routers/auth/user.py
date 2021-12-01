@@ -36,7 +36,7 @@ def read_user(username, active_user=Depends(manager), db=Depends(get_session)) -
     """
 
     logging.info(
-        "receive GET /user/{username}, current user:{0}".format(username))
+        "receive GET /user/{0}".format(username))
 
     user = get_user_by_name(username, db)
 
