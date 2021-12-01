@@ -1,17 +1,14 @@
 import logging
+from typing import Tuple
 from typing import Callable, Iterator, Optional
+
 from fastapi.openapi.models import APIKey
-from sqlalchemy import select
 from sqlalchemy.orm import Session
-from sqlalchemy.sql.expression import false
 
 from app.db import get_session
-from app.db.models import ApiKey, Post, User
+from app.db.models import ApiKey, User
 from app.library.helpers import mask_text
-from app.models import api_keys
 from app.security import hash_password, verify_password, manager
-
-from typing import Tuple
 
 
 @manager.user_loader(session_provider=get_session)
@@ -90,22 +87,6 @@ def reset_user_pwd(name: str, old_password: str, new_password: str, db: Session)
         logging.error(
             "failed to reset password for user:{0}, error:{1}".format(name, str(e)))
         return False, "internal server error"
-
-
-def create_post(text: str, owner: User, db: Session) -> Post:
-    post = Post(text=text, owner=owner)
-
-    '''
-    db.add(local_object)
-    db.commit()
-    '''
-
-    # https://stackoverflow.com/questions/24291933/sqlalchemy-object-already-attached-to-session
-    local_object = db.merge(post)
-    db.add(local_object)
-    db.commit()
-
-    return post
 
 
 def create_api_key(app_name: str, api_key: str, secret_key: str, owner: User, db: Session) -> Tuple[APIKey, str]:

@@ -1,6 +1,4 @@
-import datetime
 from pydantic import BaseModel
-from sqlalchemy.sql.sqltypes import Boolean
 
 
 class ApiKeyCreate(BaseModel):

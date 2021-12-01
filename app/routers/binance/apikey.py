@@ -1,5 +1,5 @@
 import logging
-from fastapi import FastAPI, Request, Form, APIRouter
+from fastapi import Request, Form, APIRouter
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 

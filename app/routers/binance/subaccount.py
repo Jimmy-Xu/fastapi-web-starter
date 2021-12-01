@@ -1,16 +1,14 @@
-from fastapi import FastAPI, Request, Form, APIRouter
+from fastapi import Request, Form, APIRouter
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-
-from binance import Client
+from fastapi.param_functions import Depends
 
 from app.config import Config
 import logging
+from binance import Client
 
-from fastapi.param_functions import Depends
 from app.config import Config
 from app.security import manager
-
 from app.library.helpers import get_default_api_keys
 
 

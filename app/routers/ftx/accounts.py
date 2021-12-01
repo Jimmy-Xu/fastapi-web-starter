@@ -1,11 +1,12 @@
-from fastapi import FastAPI, Request, Form, APIRouter
+from fastapi import Request, APIRouter
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.param_functions import Depends
 
 from app.config import Config
 import logging
+
 from app.library.helpers import get_default_api_keys
-from fastapi.param_functions import Depends
 from app.security import manager
 
 router = APIRouter()

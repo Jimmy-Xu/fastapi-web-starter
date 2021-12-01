@@ -2,19 +2,14 @@ import logging
 from fastapi import Request, HTTPException, APIRouter
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from app.routers.auth.forms import LoginForm
-
-
 from fastapi import Depends
-from fastapi.security import OAuth2PasswordRequestForm
-from fastapi_login.exceptions import InvalidCredentialsException
+
 from sqlalchemy.orm import Session
 
 from app.db import get_session
 from app.db.actions import get_user_by_name
-from app.models.auth import Token
 from app.security import verify_password, manager
-from starlette.responses import RedirectResponse
+from app.routers.auth.forms import LoginForm
 
 
 router = APIRouter(include_in_schema=False)

@@ -11,8 +11,6 @@ from .library.helpers import *
 from app.routers.auth import login
 from app.routers.auth.auth import router as auth_router
 from app.routers.auth.user import router as user_router
-from app.routers.auth.posts import router as posts_router
-from app.routers import twoforms, unsplash, posts
 from app.security import manager
 from app.config import Config
 
@@ -45,11 +43,6 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(login.router)
 app.include_router(auth_router)
 app.include_router(user_router)
-app.include_router(posts_router)
-
-app.include_router(unsplash.router)
-app.include_router(twoforms.router)
-app.include_router(posts.router)
 
 # binance api
 app.include_router(binance_subaccount.router)

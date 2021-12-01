@@ -1,4 +1,3 @@
-import logging
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_login.exceptions import InvalidCredentialsException
@@ -8,7 +7,7 @@ from app.db import get_session
 from app.db.actions import get_user_by_name
 from app.models.auth import Token
 from app.security import verify_password, manager
-from starlette.responses import RedirectResponse, Response
+
 
 router = APIRouter(
     prefix="/auth"
