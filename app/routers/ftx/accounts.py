@@ -5,6 +5,7 @@ from fastapi.param_functions import Depends
 
 from app.config import Config
 import logging
+from app.library.ftx import FtxClient
 
 from app.library.helpers import get_default_api_keys, is_dev_mode
 from app.security import manager
@@ -35,26 +36,31 @@ def get_accounts(request: Request, user=Depends(manager)):
     all_balances = {}
     error = ""
     try:
-        # for debug
-        all_balances = {
-            "success": True,
-            "result": {
-                "main": [
-                    {"coin": "USDTBEAR", "free": 2320.2, "spotBorrow": 0.0, "total": 2340.2,
-                        "usdValue": 2340.2, "availableWithoutBorrow": 2320.2},
-                    {"coin": "BTC", "free": 2.0, "spotBorrow": 0.0, "total": 3.2,
-                        "usdValue": 23456.7, "availableWithoutBorrow": 2.0}
-                ],
-                "Battle Royale": [
-                    {"coin": "USD", "free": 2000.0, "spotBorrow": 0.0, "total": 2200.0,
-                        "usdValue": 2200.0, "availableWithoutBorrow": 2000.0}
-                ]
+        if not dev_mode:
+            ftx_clinet = FtxClient(apiKey, secretKey)
+            all_balances = ftx_clinet.get_all_balances()
+        else:
+            # for debug
+            all_balances = {
+                "success": True,
+                "result": {
+                    "main": [
+                        {"coin": "USDTBEAR", "free": 2320.2, "spotBorrow": 0.0, "total": 2340.2,
+                            "usdValue": 2340.2, "availableWithoutBorrow": 2320.2},
+                        {"coin": "BTC", "free": 2.0, "spotBorrow": 0.0, "total": 3.2,
+                            "usdValue": 23456.7, "availableWithoutBorrow": 2.0}
+                    ],
+                    "Battle Royale": [
+                        {"coin": "USD", "free": 2000.0, "spotBorrow": 0.0, "total": 2200.0,
+                            "usdValue": 2200.0, "availableWithoutBorrow": 2000.0}
+                    ]
+                }
             }
-        }
     except Exception as e:
-        logging.error(
-            "failed to get sub account assets, error:{0}".format(str(e)))
-        error = "failed to get sub account assets, internal server error"
+        error = "failed to get balances of all accounts, error:{0}".format(
+            str(e))
+        logging.error(error)
+        all_balances['success'] = False
     finally:
         return templates.TemplateResponse(
             'ftx/accounts.html',

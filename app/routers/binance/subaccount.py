@@ -65,9 +65,8 @@ def get_subaccount(request: Request, user=Depends(manager)):
                 }
             }
     except Exception as e:
-        logging.error(
-            "failed to get sub account assets, error:{0}".format(str(e)))
-        error = "failed to get sub account assets, internal server error"
+        error = "failed to get sub account assets, error:{0}".format(str(e))
+        logging.error(error)
     finally:
         return templates.TemplateResponse(
             'binance/subaccount.html',

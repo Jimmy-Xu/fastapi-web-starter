@@ -4,7 +4,7 @@ RUN apt-get update && apt-get -y install python3 python3-dev python3-pip gcc g++
 
 RUN pip install uvicorn fastapi fastapi_login sqlalchemy \
     pydantic python-dotenv wheel python-multipart python-binance \
-    bcrypt pycryptodomex jinja2
+    bcrypt pycryptodomex jinja2 ciso8601
 
 #RUN git clone https://github.com/Jimmy-Xu/fastapi-web-starter.git -b mine /fastapi-web-starter
 ADD app /fastapi-web-starter/app

@@ -23,6 +23,7 @@
 
             <form method="post" id="category">
                 <div class="subAccount" id="subAccountExample">
+                    {% if all_balances["success"] %}
                     {% for account, data in all_balances['result'].items() %}
                     <div class="card">
                         <div class="card-header" id="heading_{{ loop.index }}">
@@ -75,6 +76,7 @@
                         </div>
                     </div>
                     {% endfor %}
+                    {% endif %}
                 </div>
                 {% if error %}
                 <div class="container">
